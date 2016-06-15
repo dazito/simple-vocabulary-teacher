@@ -1,8 +1,21 @@
 package controllers
 
-import play.api.i18n.Lang
-import play.api.mvc.Controller
+import javax.inject.Inject
 
-class Import extends Controller {
-  def importWord(sourceLanguage: Lang, word: String, targetLanguage: Lang, translation: String) = TODO
+import models.Vocabulary
+import play.api.i18n.Lang
+import play.api.mvc.{ Action, Controller }
+import services.VocabularyService
+
+class Import @Inject() (vocabularyService: VocabularyService) extends Controller {
+  def importWord(sourceLanguage: Lang, word: String, targetLanguage: Lang, translation: String) = Action { request =>
+    val added = vocabularyService.addVocabulary(
+      Vocabulary(sourceLanguage, targetLanguage, word, translation)
+    )
+    if (added)
+      Ok
+    else
+      Conflict
+  }
+
 }
