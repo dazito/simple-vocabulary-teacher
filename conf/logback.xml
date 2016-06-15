@@ -7,7 +7,7 @@
 		<encoder>
 			<pattern>
 				%coloredLevel - %logger - %message%n%xException
-			</patter>
+			</pattern>
 		</encoder>
 	</appender>
 
