@@ -2,9 +2,10 @@ package controllers
 
 import javax.inject.Inject
 
-import models.Vocabulary
+import actors.QuizzActor
+import play.api.Play.current
 import play.api.i18n.Lang
-import play.api.mvc.{ Action, Controller }
+import play.api.mvc.{ Action, Controller, WebSocket }
 import services.VocabularyService
 
 class Quizz @Inject() (vocabularyService: VocabularyService) extends Controller {
@@ -23,4 +24,10 @@ class Quizz @Inject() (vocabularyService: VocabularyService) extends Controller 
     } else
       NotAcceptable
   }
+
+  def quizzEndpoint(sourceLang: Lang, targetLang: Lang) = WebSocket.acceptWithActor[String, String] { request =>
+    out =>
+      QuizzActor.props(sourceLang, targetLang, out, vocabularyService)
+  }
+
 }
