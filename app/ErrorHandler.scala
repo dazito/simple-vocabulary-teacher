@@ -18,4 +18,10 @@ class ErrorHandler @Inject() (env: Environment, config: Configuration, sourceMap
       NotFound("Could not find " + request)
     }
   }
+
+  override protected def onForbidden(request: RequestHeader, message: String): Future[Result] = {
+    Future {
+      Forbidden("You do not belong here")
+    }
+  }
 }
