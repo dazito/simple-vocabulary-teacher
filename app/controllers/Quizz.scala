@@ -19,10 +19,22 @@ class Quizz @Inject() (vocabularyService: VocabularyService) extends Controller 
   }
 
   def check(sourceLanguage: Lang, word: String, targetLanguage: Lang, translation: String) = Action {
-    if (vocabularyService.verify(sourceLanguage, word, targetLanguage, translation)) {
-      Ok
-    } else
-      NotAcceptable
+    request =>
+      val isCorrect = vocabularyService.verify(sourceLanguage, word, targetLanguage, translation)
+      val correctScore = request.session.get("correct").map(_.toInt).getOrElse(0)
+      val wrongScore = request.session.get("wrong").map(_.toInt).getOrElse(0)
+
+      if (isCorrect) {
+        Ok.withSession(
+          "correct" -> (correctScore + 1).toString,
+          "wrong" -> wrongScore.toString
+        )
+      } else {
+        NotAcceptable.withSession(
+          "correct" -> correctScore.toString,
+          "wrong" -> (wrongScore + 1).toString
+        )
+      }
   }
 
   def quizzEndpoint(sourceLang: Lang, targetLang: Lang) = WebSocket.acceptWithActor[String, String] { request =>

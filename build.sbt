@@ -5,6 +5,8 @@ scalaVersion := "2.11.7"
 
 lazy val `simple-vocabulary-teacher` = (project in file(".")).enablePlugins(PlayScala)
 
+libraryDependencies += filters
+
 routesGenerator := InjectedRoutesGenerator
 
 com.typesafe.sbt.SbtScalariform.scalariformSettings
